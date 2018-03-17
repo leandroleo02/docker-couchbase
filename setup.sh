@@ -40,30 +40,32 @@ if ! couchbase-cli server-list -c 127.0.0.1:8091 -u "${CB_ADMIN_USER}" -p "${CB_
         echo "* Setting memory quota"
         curl -sS -X POST http://127.0.0.1:8091/pools/default \
             -d "memoryQuota=${CB_RAMSIZE}"
-        echo "* Setting up services"
-        curl -sS -X POST http://127.0.0.1:8091/node/controller/setupServices \
-            -d "services=${CB_SERVICES}"
-        echo "* Setting up storage"
-        curl -sS -X POST http://127.0.0.1:8091/settings/indexes \
-            -d "storageMode=forestdb" | python -c 'import json,sys; print("\n".join(["  %s: %s" % (k, v) for k, v in json.load(sys.stdin).items()]))'
-        echo "* Setting up credentials and port"
-        curl -sS -X POST http://127.0.0.1:8091/settings/web \
-            -d "username=${CB_ADMIN_USER}&password=${CB_ADMIN_PWD}&port=8091&" | python -c 'import json,sys; print("\n".join(["  %s: %s" % (k, v) for k, v in json.load(sys.stdin).items()]))'
     else
         echo "* Setting memory quota"
         curl -sS -X POST http://127.0.0.1:8091/pools/default \
             -d "memoryQuota=${CB_RAMSIZE}" \
             -d "indexMemoryQuota=${CB_INDEX_RAMSIZE}" \
             -d "ftsMemoryQuota=${CB_FTS_RAMSIZE}"
-        echo "* Setting up services"
-        curl -sS -X POST http://127.0.0.1:8091/node/controller/setupServices \
-            -d "services=${CB_SERVICES}"
-        echo "* Setting up storage"
-        curl -sS -X POST http://127.0.0.1:8091/settings/indexes \
-            -d "storageMode=forestdb" | python -c 'import json,sys; print("\n".join(["  %s: %s" % (k, v) for k, v in json.load(sys.stdin).items()]))'
-        echo "* Setting up credentials and port"
-        curl -sS -X POST http://127.0.0.1:8091/settings/web \
-            -d "username=${CB_ADMIN_USER}&password=${CB_ADMIN_PWD}&port=8091&" | python -c 'import json,sys; print("\n".join(["  %s: %s" % (k, v) for k, v in json.load(sys.stdin).items()]))'
+    fi
+
+    echo "* Setting up services"
+    curl -sS -X POST http://127.0.0.1:8091/node/controller/setupServices \
+        -d "services=${CB_SERVICES}"
+    echo "* Setting up storage"
+    curl -sS -X POST http://127.0.0.1:8091/settings/indexes \
+        -d "storageMode=forestdb" | python -c 'import json,sys; print("\n".join(["  %s: %s" % (k, v) for k, v in json.load(sys.stdin).items()]))'
+    echo "* Setting up credentials and port"
+    curl -sS -X POST http://127.0.0.1:8091/settings/web \
+        -d "username=${CB_ADMIN_USER}&password=${CB_ADMIN_PWD}&port=8091&" | python -c 'import json,sys; print("\n".join(["  %s: %s" % (k, v) for k, v in json.load(sys.stdin).items()]))'
+    
+    if [[ ! -z "$CB_BUCKET" ]]; then
+        echo "* Setting up bucket"
+        curl -sS -u $CB_ADMIN_USER:$CB_ADMIN_PWD -X POST http://127.0.0.1:8091/pools/default/buckets \
+            -d name=$CB_BUCKET \
+            -d bucketType=couchbase \
+            -d ramQuotaMB=128 \
+            -d authType=sasl \
+            -d saslPassword=$CB_BUCKET_PASSWORD
     fi
 fi
 

@@ -35,3 +35,5 @@ The following variables are available
 * __CB_INDEX_RAMSIZE__ : Index size _(default: 256)_
 * __CB_FTS_RAMSIZE__ : FTS size _(default: 256)_
 * __CB_INDEX_STORAGE__ : Index storage type _(default: default)_
+* __CB_BUCKET__: Bucket name _(optional value, if it's empty, doesn't create the bucket)_
+* __CB_BUCKET_PASSWORD__: Bucket password _(only used if the bucket is created)_
