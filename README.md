@@ -37,3 +37,6 @@ The following variables are available
 * __CB_INDEX_STORAGE__ : Index storage type _(default: default)_
 * __CB_BUCKET__: Bucket name _(optional value, if it's empty, doesn't create the bucket)_
 * __CB_BUCKET_PASSWORD__: Bucket password _(only used if the bucket is created)_
+* __CB_BUCKET_TYPE__: Bucket type _(default: couchbase)_
+* __CB_BUCKET_RAM_QUOTA_MB__: Bucket RAM Quota in MB _(default: 128)_
+* __CB_BUCKET_AUTH_TYPE__: Bucket auth type _(default: sasl)_

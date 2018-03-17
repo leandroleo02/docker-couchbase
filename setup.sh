@@ -14,6 +14,9 @@ CB_RAMSIZE="${CB_RAMSIZE:-512}"
 CB_INDEX_RAMSIZE="${CB_INDEX_RAMSIZE:-256}"
 CB_FTS_RAMSIZE="${CB_FTS_RAMSIZE:-256}"
 CB_INDEX_STORAGE="${CB_INDEX_STORAGE:-forestdb}"
+CB_BUCKET_TYPE="${CB_BUCKET_TYPE:-couchbase}"
+CB_BUCKET_RAM_QUOTA_MB="${CB_BUCKET_RAM_QUOTA_MB:-128}"
+CB_BUCKET_AUTH_TYPE="${CB_BUCKET_AUTH_TYPE:-sasl}"
 
 # Starts couchbase in the background
 echo -n "* Starting couchbase "
@@ -62,9 +65,9 @@ if ! couchbase-cli server-list -c 127.0.0.1:8091 -u "${CB_ADMIN_USER}" -p "${CB_
         echo "* Setting up bucket"
         curl -sS -u $CB_ADMIN_USER:$CB_ADMIN_PWD -X POST http://127.0.0.1:8091/pools/default/buckets \
             -d name=$CB_BUCKET \
-            -d bucketType=couchbase \
-            -d ramQuotaMB=128 \
-            -d authType=sasl \
+            -d bucketType=$CB_BUCKET_TYPE \
+            -d ramQuotaMB=$CB_BUCKET_RAM_QUOTA_MB \
+            -d authType=$CB_BUCKET_AUTH_TYPE \
             -d saslPassword=$CB_BUCKET_PASSWORD
     fi
 fi
